@@ -9,16 +9,8 @@ export interface LocationData {
   id?: string | null;
   lat: number | null;
   lng: number | null;
-  name: string;
-  color: string;
-}
-
-export interface MapComponentProps {
-  userLocation: LatLngLiteral;
-  locationData: LocationData;
-  handleMapClick: (e: MapClickEvent) => void;
-  showInfo: boolean;
-  handleCloseInfoWindow: () => void;
+  name?: string;
+  color?: string;
 }
 
 //Links Types
@@ -30,3 +22,50 @@ export interface LinkData {
 export interface TwoSideLinksProps {
   links: LinkData[];
 }
+
+export interface LocationFormProps {
+  locationData: LocationData;
+  setLocationData: React.Dispatch<React.SetStateAction<LocationData>>;
+  handleSaveLocation: () => void;
+  handleColorChange: (color: ColorResult) => void;
+  handleDeleteLocation?: () => void;
+}
+
+export interface ColorPickerProps {
+  color: string;
+  onChange: (color: ColorResult) => void;
+}
+
+export interface LocationInfoCardProps {
+  locationData: LocationData;
+  onSave?: () => void;
+}
+
+export interface MarkerType {
+  id?: string | null;
+  lat: number;
+  lng: number;
+  name?: string;
+  color?: string;
+}
+
+export interface MapComponentProps {
+  center: { lat: number; lng: number };
+  //add location
+  locationData?: LocationData;
+  showInfo?: boolean;
+  onMapClick?: (e: google.maps.MapMouseEvent) => void;
+  onCloseInfo?: () => void;
+  onSave?: () => void;
+  //list locations
+  markers?: MarkerType[];
+  onMarkerClick?: (marker: MarkerType) => void;
+  selectedId?: string | null;
+  directions?: google.maps.DirectionsResult | null;
+  onGoogleReady?: () => void;
+  userLocation?: google.maps.LatLngLiteral;
+}
+
+export type ValidationErrors = {
+  [key: string]: string;
+};

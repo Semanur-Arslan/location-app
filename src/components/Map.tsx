@@ -1,37 +1,17 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   GoogleMap,
-  LoadScript,
   Marker,
   InfoWindow,
+  DirectionsRenderer,
+  useJsApiLoader,
 } from "@react-google-maps/api";
 import { LocationInfoCard } from "@/components/LocationInfoCard";
-import { LocationData } from "@/types/types";
+import { MapComponentProps } from "@/types/types";
+import { getColoredMarkerIcon } from "@/utils/markerUtils";
 
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
-
-type MarkerType = {
-  id?: string | null;
-  lat: number;
-  lng: number;
-  name?: string;
-  color?: string;
-};
-
-type MapComponentProps = {
-  center: { lat: number; lng: number };
-  //add location
-  locationData?: LocationData;
-  showInfo?: boolean;
-  onMapClick?: (e: google.maps.MapMouseEvent) => void;
-  onCloseInfo?: () => void;
-  onSave?: () => void;
-  //list locations
-  markers?: MarkerType[];
-  onMarkerClick?: (marker: MarkerType) => void;
-  selectedId?: string | null;
-};
 
 export const MapComponent: React.FC<MapComponentProps> = ({
   center,
@@ -43,61 +23,74 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   markers = [],
   onMarkerClick,
   selectedId,
+  directions,
+  onGoogleReady,
 }) => {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey,
+    libraries: ["places"],
+  });
+
+  useEffect(() => {
+    if (isLoaded) {
+      onGoogleReady?.();
+    }
+  }, [isLoaded, onGoogleReady]);
+
+  if (!isLoaded) return <div>Loading map...</div>;
+
   return (
-    <LoadScript googleMapsApiKey={googleMapsApiKey}>
-      <GoogleMap
-        mapContainerStyle={{ width: "100%", height: "100vh" }}
-        center={center}
-        zoom={13}
-        onClick={onMapClick}
-      >
-        {locationData?.lat && locationData?.lng && (
-          <Marker position={{ lat: locationData.lat, lng: locationData.lng }}>
-            {showInfo && (
+    <GoogleMap
+      mapContainerStyle={{ width: "100%", height: "100vh" }}
+      center={center}
+      zoom={13}
+      onClick={onMapClick}
+    >
+      {locationData?.lat && locationData?.lng && (
+        <Marker position={{ lat: locationData.lat, lng: locationData.lng }}>
+          {showInfo && (
+            <InfoWindow
+              position={{ lat: locationData.lat, lng: locationData.lng }}
+              onCloseClick={onCloseInfo}
+            >
+              <LocationInfoCard locationData={locationData} onSave={onSave} />
+            </InfoWindow>
+          )}
+        </Marker>
+      )}
+
+      {markers.map((marker) => {
+        const isSelected = marker.id === selectedId;
+        const icon = getColoredMarkerIcon(marker.color || "#FF0000");
+
+        return (
+          <Marker
+            key={marker.id || `${marker.lat}-${marker.lng}`}
+            position={{ lat: marker.lat, lng: marker.lng }}
+            icon={icon}
+            onClick={() => onMarkerClick?.(marker)}
+          >
+            {isSelected && marker.name && (
               <InfoWindow
-                position={{ lat: locationData.lat, lng: locationData.lng }}
-                onCloseClick={onCloseInfo}
+                position={{ lat: marker.lat, lng: marker.lng }}
+                onCloseClick={() => onMarkerClick?.({ ...marker, id: null })}
               >
-                <LocationInfoCard locationData={locationData} onSave={onSave} />
+                <LocationInfoCard locationData={marker} />
               </InfoWindow>
             )}
           </Marker>
-        )}
+        );
+      })}
 
-        {markers.map((marker) => {
-          const isSelected = marker.id === selectedId;
-
-          return (
-            <Marker
-              key={marker.id || `${marker.lat}-${marker.lng}`}
-              position={{ lat: marker.lat, lng: marker.lng }}
-              icon={{
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 8,
-                fillColor: marker.color || "#ff0000",
-                fillOpacity: 1,
-                strokeWeight: 1,
-              }}
-              onClick={() => onMarkerClick?.(marker)}
-            >
-              {isSelected && marker.name && (
-                <InfoWindow
-                  position={{ lat: marker.lat, lng: marker.lng }}
-                  onCloseClick={() => onMarkerClick?.({ ...marker, id: null })}
-                >
-                  <div>
-                    <strong>{marker.name}</strong>
-                    <p>
-                      ({marker.lat.toFixed(4)}, {marker.lng.toFixed(4)})
-                    </p>
-                  </div>
-                </InfoWindow>
-              )}
-            </Marker>
-          );
-        })}
-      </GoogleMap>
-    </LoadScript>
+      {directions && (
+        <DirectionsRenderer
+          directions={directions}
+          options={{
+            suppressMarkers: true,
+            preserveViewport: true,
+          }}
+        />
+      )}
+    </GoogleMap>
   );
 };

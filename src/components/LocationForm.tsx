@@ -1,23 +1,16 @@
 import React from "react";
-import { Box, Input, Button } from "@chakra-ui/react";
-import { LocationData } from "@/types/types";
+import { Box, Input, Button, Flex } from "@chakra-ui/react";
+import { LocationFormProps } from "@/types/types";
 import { ColorPicker } from "@/components/ColorPicker";
 import { Title } from "@/components/Title";
-import { ColorResult } from "react-color";
 import { TwoSideLinks } from "./TwoSideLinks";
-
-interface LocationFormProps {
-  locationData: LocationData;
-  setLocationData: React.Dispatch<React.SetStateAction<LocationData>>;
-  handleSaveLocation: () => void;
-  handleColorChange: (color: ColorResult) => void;
-}
 
 const LocationForm: React.FC<LocationFormProps> = ({
   locationData,
   setLocationData,
   handleSaveLocation,
   handleColorChange,
+  handleDeleteLocation,
 }) => {
   return (
     <Box
@@ -51,14 +44,25 @@ const LocationForm: React.FC<LocationFormProps> = ({
 
         <Box>
           <ColorPicker
-            color={locationData.color}
+            color={locationData.color ?? "gray"}
             onChange={handleColorChange}
           />
         </Box>
 
-        <Button colorScheme="teal" onClick={handleSaveLocation} mt={4}>
-          {locationData.name ? "Save Changes" : "Add Location"}
-        </Button>
+        <Flex gap={4} mt={4} justifyContent="flex-end">
+          <Button colorScheme="teal" onClick={handleSaveLocation}>
+            {locationData.name ? "Save Changes" : "Add Location"}
+          </Button>
+          {handleDeleteLocation && (
+            <Button
+              colorScheme="red"
+              variant="outline"
+              onClick={handleDeleteLocation}
+            >
+              Delete Location
+            </Button>
+          )}
+        </Flex>
       </Box>
 
       <TwoSideLinks links={[{ label: "Show Location List", href: "/list" }]} />
