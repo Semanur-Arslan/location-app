@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { ColorResult } from "react-color";
+import { ColorPickerProps } from "@/types/types";
 
 const ChromePicker = dynamic(
   () => import("react-color/lib/components/chrome/Chrome"),
@@ -10,12 +10,7 @@ const ChromePicker = dynamic(
   }
 );
 
-type Props = {
-  color: string;
-  onChange: (color: ColorResult) => void;
-};
-
-export const ColorPicker = ({ color, onChange }: Props) => {
+export const ColorPicker = ({ color, onChange }: ColorPickerProps) => {
   return (
     <ChromePicker
       color={color}

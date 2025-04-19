@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@chakra-ui/react";
-import { updateLocation } from "@/store/locationSlice";
+import { updateLocation, removeLocation } from "@/store/locationSlice";
 import { toast } from "react-toastify";
 import { ColorResult } from "react-color";
 import { LocationData } from "@/types/types";
@@ -12,10 +12,12 @@ import { useParams } from "next/navigation";
 import { RootState } from "@/types/redux";
 import { MapClickEvent } from "@/types/types";
 import LocationForm from "@/components/LocationForm";
+import { useRouter } from "next/navigation";
 
 const EditLocation = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const router = useRouter();
   const locations = useSelector((state: RootState) => state.location.locations);
 
   const [locationData, setLocationData] = useState<LocationData>({
@@ -104,6 +106,17 @@ const EditLocation = () => {
     setShowInfo(false);
   };
 
+  const handleDeleteLocation = () => {
+    if (params.id) {
+      const id = params.id.toString();
+      dispatch(removeLocation(id));
+      toast.success("Location deleted successfully!");
+      router.push(`/list`);
+    } else {
+      toast.error("Location not found.");
+    }
+  };
+
   return (
     <Box display="flex">
       <Box flex="3">
@@ -123,6 +136,7 @@ const EditLocation = () => {
           setLocationData={setLocationData}
           handleSaveLocation={handleSaveLocation}
           handleColorChange={handleColorChange}
+          handleDeleteLocation={handleDeleteLocation}
         />
       </Box>
     </Box>

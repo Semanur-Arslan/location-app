@@ -34,7 +34,7 @@ const LocationList = () => {
         >
           <Title text="Saved Locations" />
 
-          <Button color="teal.500" onClick={() => router.push("/routes")}>
+          <Button color="teal.500" onClick={() => router.push("route")}>
             Show Route
           </Button>
         </Flex>
