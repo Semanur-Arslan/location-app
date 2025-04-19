@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Box, Input, Heading } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { addLocation } from "@/store/locationSlice";
 import { toast } from "react-toastify";
 import { ColorResult } from "react-color";
 import { LocationData, MapClickEvent } from "@/types/types";
 import { Location } from "@/types/redux";
-import { ColorPicker } from "@/components/ColorPicker";
 import { MapComponent } from "@/components/Map";
+import LocationForm from "@/components/LocationForm";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -112,47 +112,12 @@ const Home = () => {
             </p>
           </Box>
         ) : (
-          <>
-            <Box
-              minHeight="100vh"
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="flex-start"
-              gap="4"
-            >
-              <Heading as="h6" size="md" color="teal.500">
-                Add Location
-              </Heading>
-
-              <Box
-                display="flex"
-                flexDirection="column"
-                gap="4"
-                width="100%"
-                maxWidth="400px"
-              >
-                <Input
-                  placeholder="Location Name"
-                  value={locationData.name}
-                  onChange={(e) =>
-                    setLocationData({
-                      ...locationData,
-                      name: e.target.value,
-                    })
-                  }
-                  p={2}
-                />
-
-                <Box>
-                  <ColorPicker
-                    color={locationData.color}
-                    onChange={handleColorChange}
-                  />
-                </Box>
-              </Box>
-            </Box>
-          </>
+          <LocationForm
+            locationData={locationData}
+            setLocationData={setLocationData}
+            handleSaveLocation={handleSaveLocation}
+            handleColorChange={handleColorChange}
+          />
         )}
       </Box>
     </Box>

@@ -12,7 +12,7 @@ import { LocationData } from "@/types/types";
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 type MarkerType = {
-  id?: string;
+  id?: string | null;
   lat: number;
   lng: number;
   name?: string;
@@ -30,6 +30,7 @@ type MapComponentProps = {
   //list locations
   markers?: MarkerType[];
   onMarkerClick?: (marker: MarkerType) => void;
+  selectedId?: string | null;
 };
 
 export const MapComponent: React.FC<MapComponentProps> = ({
@@ -41,6 +42,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   onSave,
   markers = [],
   onMarkerClick,
+  selectedId,
 }) => {
   return (
     <LoadScript googleMapsApiKey={googleMapsApiKey}>
@@ -63,20 +65,38 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           </Marker>
         )}
 
-        {markers.map((marker) => (
-          <Marker
-            key={marker.id || `${marker.lat}-${marker.lng}`}
-            position={{ lat: marker.lat, lng: marker.lng }}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 8,
-              fillColor: marker.color || "#ff0000",
-              fillOpacity: 1,
-              strokeWeight: 1,
-            }}
-            onClick={() => onMarkerClick?.(marker)}
-          />
-        ))}
+        {markers.map((marker) => {
+          const isSelected = marker.id === selectedId;
+
+          return (
+            <Marker
+              key={marker.id || `${marker.lat}-${marker.lng}`}
+              position={{ lat: marker.lat, lng: marker.lng }}
+              icon={{
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                fillColor: marker.color || "#ff0000",
+                fillOpacity: 1,
+                strokeWeight: 1,
+              }}
+              onClick={() => onMarkerClick?.(marker)}
+            >
+              {isSelected && marker.name && (
+                <InfoWindow
+                  position={{ lat: marker.lat, lng: marker.lng }}
+                  onCloseClick={() => onMarkerClick?.({ ...marker, id: null })}
+                >
+                  <div>
+                    <strong>{marker.name}</strong>
+                    <p>
+                      ({marker.lat.toFixed(4)}, {marker.lng.toFixed(4)})
+                    </p>
+                  </div>
+                </InfoWindow>
+              )}
+            </Marker>
+          );
+        })}
       </GoogleMap>
     </LoadScript>
   );

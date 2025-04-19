@@ -20,3 +20,13 @@ export interface MapComponentProps {
   showInfo: boolean;
   handleCloseInfoWindow: () => void;
 }
+
+//Links Types
+export interface LinkData {
+  label: string;
+  href: string;
+}
+
+export interface TwoSideLinksProps {
+  links: LinkData[];
+}
