@@ -1,12 +1,33 @@
 import { configureStore } from "@reduxjs/toolkit";
 import locationReducer from "./locationSlice";
-import { RootState, AppDispatch } from "@/types/redux";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-export const store = configureStore({
-  reducer: {
-    location: locationReducer,
-  },
+import { combineReducers } from "redux";
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["location"],
+};
+
+const rootReducer = combineReducers({
+  location: locationReducer,
 });
 
-export type { RootState, AppDispatch };
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
+
+export const persistor = persistStore(store);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
 export default store;
