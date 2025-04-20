@@ -54,7 +54,7 @@ https://github.com/user-attachments/assets/f235c87c-f4f3-4f0b-91b5-7039dd1754fd
 
 ```bash
 # Depoyu klonlayın
-git clone [https://github.com/kullanici-adi/proje-adi.git](https://github.com/Semanur-Arslan/location-app.git)
+git clone https://github.com/Semanur-Arslan/location-app.git
 
 # Proje klasörüne geçin
 cd location-app
@@ -64,3 +64,11 @@ npm install
 
 # Ortam değişkenleri dosyasını oluşturun
 cp .env.example .env.local
+
+#.env.local dosyasına Google Maps API anahtarınızı girin
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+# Uygulamayı başlatın
+npm run dev
+
+
