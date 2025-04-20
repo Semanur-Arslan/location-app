@@ -97,7 +97,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             suppressMarkers: true,
             preserveViewport: true,
             polylineOptions: {
-              strokeColor: "#38B2AC",
+              strokeColor: "#5EEAD3",
             },
           }}
         />

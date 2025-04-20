@@ -112,7 +112,7 @@ const LocationList = () => {
                     alignSelf={{ base: "flex-end", sm: "center" }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      router.push(`/location/edit/${loc.id}`);
+                      router.push(`/edit/${loc.id}`);
                     }}
                   />
                 </Flex>
