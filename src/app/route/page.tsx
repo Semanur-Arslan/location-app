@@ -1,42 +1,31 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
+import { useState, useEffect, useCallback } from "react";
 import { RootState } from "@/types/redux";
 import { Box, Text, Flex } from "@chakra-ui/react";
 import { MapComponent } from "@/components/Map";
 import { Title } from "@/components/Title";
 import { toast } from "react-toastify";
-import { LatLngLiteral } from "@/types/types";
 import { TwoSideLinks } from "@/components/TwoSideLinks";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { sortLocationsByDistance } from "@/utils/sortLocationsByDistance";
+import LocationList from "@/components/LocationList";
 
 const RoutePage = () => {
   const locations = useSelector((state: RootState) => state.location.locations);
-  const [locationsWithUserLocation, setLocationsWithUserLocation] =
-    useState(locations);
+  const userLocation = useGeolocation();
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [userLocation, setUserLocation] = useState<LatLngLiteral | null>(null);
+  const [googleReady, setGoogleReady] = useState(false);
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
-  const [googleReady, setGoogleReady] = useState(false);
+  const [locationsWithUserLocation, setLocationsWithUserLocation] =
+    useState(locations);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      () => {
-        toast.error(
-          "Location information could not be obtained. Please enable location permissions."
-        );
-      }
-    );
-  }, []);
+    if (userLocation && locations.length > 0) {
+      const sortedLocations = sortLocationsByDistance(locations, userLocation);
 
-  useEffect(() => {
-    if (userLocation) {
       const userMarker = {
         id: "my-location",
         name: "My Location",
@@ -45,29 +34,30 @@ const RoutePage = () => {
         color: "gray",
       };
 
-      const filteredLocations = locations.filter(
-        (loc) => loc.id !== userMarker.id
-      );
-      setLocationsWithUserLocation([...filteredLocations, userMarker]);
+      setLocationsWithUserLocation([...sortedLocations, userMarker]);
     }
   }, [userLocation, locations]);
 
   useEffect(() => {
-    if (googleReady && locations.length > 0 && userLocation) {
+    if (googleReady && locationsWithUserLocation.length > 1 && userLocation) {
       const directionsService = new window.google.maps.DirectionsService();
+
+      const sorted = locationsWithUserLocation.filter(
+        (loc) => loc.id !== "my-location"
+      );
 
       const request: google.maps.DirectionsRequest = {
         origin: userLocation,
         destination: {
-          lat: locations[locations.length - 1].lat,
-          lng: locations[locations.length - 1].lng,
+          lat: sorted[sorted.length - 1].lat,
+          lng: sorted[sorted.length - 1].lng,
         },
         travelMode: google.maps.TravelMode.DRIVING,
-        waypoints: locations.slice(0, -1).map((marker) => ({
+        waypoints: sorted.slice(0, -1).map((marker) => ({
           location: { lat: marker.lat, lng: marker.lng },
           stopover: true,
         })),
-        optimizeWaypoints: true,
+        optimizeWaypoints: false,
       };
 
       directionsService.route(request, (result, status) => {
@@ -79,11 +69,15 @@ const RoutePage = () => {
         }
       });
     }
-  }, [googleReady, locations, userLocation]);
+  }, [googleReady, locationsWithUserLocation, userLocation]);
 
   const handleGoogleReady = useCallback(() => {
     setGoogleReady(true);
   }, []);
+
+  const handleMarkerClick = (id: string) => {
+    setSelectedId(id);
+  };
 
   return (
     <Flex direction={{ base: "column", md: "row" }}>
@@ -124,10 +118,15 @@ const RoutePage = () => {
             <Title text="Route Created" />
             <Text>
               It started from the location closest to your location and a route
-              was created for the points you defined. Please make sure your
-              location information is open.
+              was created for the points you defined.
             </Text>
-            <Text>You can add a new location or view your location list</Text>
+            <LocationList
+              locations={locationsWithUserLocation.filter(
+                (loc) => loc.id !== "my-location"
+              )}
+              onLocationClick={handleMarkerClick}
+            />
+
             <TwoSideLinks
               links={[
                 { label: "Add New Location", href: "/" },
