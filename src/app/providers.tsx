@@ -1,19 +1,14 @@
 "use client";
 
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "@/store/index";
 import { CacheProvider } from "@emotion/react";
 import { emotionCache } from "@/lib/emotion-cache";
 import { Toaster } from "@/components/Toaster";
-
-const theme = extendTheme({
-  config: {
-    initialColorMode: "light",
-    useSystemColorMode: false,
-  },
-});
+import theme from "@/lib/theme";
+import ThemeToggleButton from "@/components/ThemeToggleButton";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -21,6 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <Toaster />
       <CacheProvider value={emotionCache}>
         <ChakraProvider theme={theme}>
+          <ThemeToggleButton />
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
               {children}

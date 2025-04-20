@@ -20,7 +20,6 @@ const LocationList = () => {
   const locations = useSelector((state: RootState) => state.location.locations);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const router = useRouter();
-
   return (
     <Box p={6} height="100%">
       <VStack align="start" spacing={6}>
@@ -31,15 +30,11 @@ const LocationList = () => {
           width="100%"
         >
           <Title text="Saved Locations" />
-          <Flex gap={2}>
-            <Button
-              color="white"
-              backgroundColor="teal.500"
-              onClick={() => router.push("route")}
-            >
+          <Flex gap={2} pe={24}>
+            <Button colorScheme="teal" onClick={() => router.push("route")}>
               Show Route
             </Button>
-            <Button color="teal.500" onClick={() => router.push("/")}>
+            <Button colorScheme="gray" onClick={() => router.push("/")}>
               Add New Location
             </Button>
           </Flex>
@@ -95,12 +90,7 @@ const LocationList = () => {
                     />
 
                     {selectedId === loc.id && (
-                      <VStack
-                        spacing={2}
-                        fontSize="sm"
-                        color="gray.600"
-                        align="flex-start"
-                      >
+                      <VStack spacing={2} fontSize="sm" align="flex-start">
                         <HStack spacing={1}>
                           <Text fontWeight="medium">Lat:</Text>
                           <Text>{loc.lat.toFixed(4)}</Text>

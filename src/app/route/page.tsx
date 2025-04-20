@@ -110,6 +110,7 @@ const RoutePage = () => {
         {locations.length === 0 ? (
           <Box mt={4}>
             <p>There are no saved locations</p>
+            <TwoSideLinks links={[{ label: "Add New Location", href: "/" }]} />
           </Box>
         ) : (
           <Box
@@ -127,14 +128,14 @@ const RoutePage = () => {
               location information is open.
             </Text>
             <Text>You can add a new location or view your location list</Text>
+            <TwoSideLinks
+              links={[
+                { label: "Add New Location", href: "/" },
+                { label: "Show Location List", href: "/list" },
+              ]}
+            />
           </Box>
         )}
-        <TwoSideLinks
-          links={[
-            { label: "Add New Location", href: "/" },
-            { label: "Show Location List", href: "/list" },
-          ]}
-        />
       </Box>
     </Flex>
   );

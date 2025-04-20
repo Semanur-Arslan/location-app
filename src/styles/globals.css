@@ -1,13 +1,11 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+body {
+  background-color: var(--chakra-colors-gray-50); 
+  color: var(--chakra-colors-gray-800);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme="dark"] {
+  background-color: var(--chakra-colors-gray-800);
+  color: var(--chakra-colors-gray-50);
 }
 
 html,
@@ -40,3 +38,5 @@ a {
     color-scheme: dark;
   }
 }
+
+

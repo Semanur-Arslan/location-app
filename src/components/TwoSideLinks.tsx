@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
-import { Flex, Link } from "@chakra-ui/react";
+import { Flex, Link, useColorModeValue } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { TwoSideLinksProps } from "@/types/types";
 
 export const TwoSideLinks: React.FC<TwoSideLinksProps> = ({ links }) => {
+  const linkColor = useColorModeValue("teal.500", "gray.100");
   return (
     <Flex
       mt={4}
@@ -16,7 +17,7 @@ export const TwoSideLinks: React.FC<TwoSideLinksProps> = ({ links }) => {
           key={index}
           as={NextLink}
           href={link.href}
-          color="teal.600"
+          color={linkColor}
           fontSize={12}
           fontWeight="medium"
         >
