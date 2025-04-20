@@ -34,6 +34,7 @@ export interface LocationFormProps {
   handleSaveLocation: () => void;
   handleColorChange: (color: ColorResult) => void;
   handleDeleteLocation?: () => void;
+  type: string;
 }
 
 export interface ColorPickerProps {

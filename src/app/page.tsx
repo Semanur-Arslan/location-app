@@ -108,6 +108,7 @@ const Home = () => {
           setLocationData={setLocationData}
           handleSaveLocation={handleSaveLocation}
           handleColorChange={handleColorChange}
+          type="add"
         />
       </Box>
     </Flex>

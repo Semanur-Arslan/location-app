@@ -11,6 +11,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
   handleSaveLocation,
   handleColorChange,
   handleDeleteLocation,
+  type,
 }) => {
   return (
     <Box
@@ -21,7 +22,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
       alignItems="flex-start"
       gap="4"
     >
-      <Title text={locationData.name ? "Edit Location" : "Add Location"} />
+      <Title text={type === "edit" ? "Edit Location" : "Add Location"} />
 
       <Box
         display="flex"
@@ -51,9 +52,9 @@ const LocationForm: React.FC<LocationFormProps> = ({
 
         <Flex gap={4} mt={4} justifyContent="flex-end">
           <Button colorScheme="teal" onClick={handleSaveLocation}>
-            {locationData ? "Save Changes" : "Add Location"}
+            {type === "edit" ? "Save Changes" : "Add Location"}
           </Button>
-          {handleDeleteLocation && (
+          {type === "edit" && (
             <Button
               colorScheme="red"
               variant="outline"

@@ -132,6 +132,7 @@ const EditLocation = () => {
           handleSaveLocation={handleSaveLocation}
           handleColorChange={handleColorChange}
           handleDeleteLocation={handleDeleteLocation}
+          type="edit"
         />
       </Box>
     </Flex>
