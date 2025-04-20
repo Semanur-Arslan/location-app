@@ -10,6 +10,7 @@ import {
 import { LocationInfoCard } from "@/components/LocationInfoCard";
 import { MapComponentProps } from "@/types/types";
 import { getColoredMarkerIcon } from "@/utils/markerUtils";
+import { useMapStyles } from "@/hooks/useMapStyles";
 
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
@@ -30,6 +31,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     googleMapsApiKey,
   });
 
+  const mapStyles = useMapStyles();
+
   useEffect(() => {
     if (isLoaded) {
       onGoogleReady?.();
@@ -40,10 +43,16 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
   return (
     <GoogleMap
-      mapContainerStyle={{ width: "100%", height: "100%" }}
+      mapContainerStyle={{
+        width: "100%",
+        height: "100%",
+      }}
       center={center}
       zoom={13}
       onClick={onMapClick}
+      options={{
+        styles: mapStyles,
+      }}
     >
       {locationData?.lat && locationData?.lng && (
         <Marker position={{ lat: locationData.lat, lng: locationData.lng }}>
@@ -87,6 +96,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           options={{
             suppressMarkers: true,
             preserveViewport: true,
+            polylineOptions: {
+              strokeColor: "#38B2AC",
+            },
           }}
         />
       )}
