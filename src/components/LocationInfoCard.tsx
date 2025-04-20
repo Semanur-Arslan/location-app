@@ -10,7 +10,7 @@ export const LocationInfoCard = ({
 }: LocationInfoCardProps) => {
   return (
     <Box
-      p={3}
+      p={2}
       minW="200px"
       bg="white"
       borderRadius="md"
@@ -24,6 +24,9 @@ export const LocationInfoCard = ({
         display="flex"
         alignItems="center"
         gap={1}
+        whiteSpace="normal"
+        wordBreak="break-word"
+        color="gray"
       >
         <HiLocationMarker size={32} color={locationData.color} />
         {locationData.name}

@@ -14,7 +14,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
 }) => {
   return (
     <Box
-      minHeight="100vh"
+      height="100%"
       display="flex"
       flexDirection="column"
       justifyContent="center"
@@ -51,7 +51,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
 
         <Flex gap={4} mt={4} justifyContent="flex-end">
           <Button colorScheme="teal" onClick={handleSaveLocation}>
-            {locationData.name ? "Save Changes" : "Add Location"}
+            {locationData ? "Save Changes" : "Add Location"}
           </Button>
           {handleDeleteLocation && (
             <Button

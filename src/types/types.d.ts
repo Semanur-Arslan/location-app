@@ -23,6 +23,11 @@ export interface TwoSideLinksProps {
   links: LinkData[];
 }
 
+export type ValidationErrors = {
+  fields?: string;
+  location?: string;
+};
+
 export interface LocationFormProps {
   locationData: LocationData;
   setLocationData: React.Dispatch<React.SetStateAction<LocationData>>;
@@ -65,7 +70,3 @@ export interface MapComponentProps {
   onGoogleReady?: () => void;
   userLocation?: google.maps.LatLngLiteral;
 }
-
-export type ValidationErrors = {
-  [key: string]: string;
-};
