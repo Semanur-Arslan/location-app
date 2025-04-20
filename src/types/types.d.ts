@@ -71,3 +71,14 @@ export interface MapComponentProps {
   onGoogleReady?: () => void;
   userLocation?: google.maps.LatLngLiteral;
 }
+
+//Location List
+export interface Location {
+  id: string;
+  name: string;
+}
+
+export interface LocationListProps {
+  locations: Location[];
+  onLocationClick: (id: string) => void;
+}
