@@ -1,71 +1,53 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { addLocation } from "@/store/locationSlice";
 import { toast } from "react-toastify";
 import { ColorResult } from "react-color";
-import { LocationData, MapClickEvent, LatLngLiteral } from "@/types/types";
+import { LocationData, MapClickEvent } from "@/types/types";
 import { Location } from "@/types/redux";
 import { MapComponent } from "@/components/Map";
 import LocationForm from "@/components/LocationForm";
+import { useValidation } from "@/hooks/useValidation";
+import { useGeolocation } from "@/hooks/useGeolocation";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
+  const userLocation = useGeolocation();
   const [locationData, setLocationData] = useState<LocationData>({
     lat: null,
     lng: null,
     name: "",
     color: "#ff0000",
   });
-  const [userLocation, setUserLocation] = useState<LatLngLiteral>({
-    lat: 41.0082,
-    lng: 28.9784,
-  });
+  const { errors, validate } = useValidation(locationData);
   const [showInfo, setShowInfo] = useState(false);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) =>
-          setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
-        () =>
-          toast.info(
-            "You can enable location permissions for accurate location information."
-          )
-      );
-    } else {
-      toast.error("Geolocation API is not supported.");
-    }
-  }, []);
-
   const handleMapClick = (e: MapClickEvent) => {
-    const latLng = e.latLng;
-    if (!latLng)
-      return toast.error("Location information could not be obtained");
-    if (!locationData.name) return toast.error("Name is required.");
-    if (!locationData.color) return toast.error("Color is required.");
+    const { latLng } = e;
+    if (!latLng) return;
+
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+
     setLocationData((prev) => ({
       ...prev,
-      lat: latLng.lat(),
-      lng: latLng.lng(),
+      lat,
+      lng,
     }));
+
     setShowInfo(true);
   };
 
   const handleSaveLocation = () => {
+    if (!validate()) {
+      Object.values(errors).forEach((error) => {
+        toast.error(error);
+      });
+      return;
+    }
     const { lat, lng, name, color } = locationData;
-    if (!name) {
-      return toast.error("Location name is required.");
-    }
-    if (!color) {
-      return toast.error("Location color is required.");
-    }
-    if (!lat || !lng) {
-      return toast.error("Location must be selected on the map.");
-    }
 
     if (lat && lng && name && color) {
       const newLocation: Location = {
@@ -103,8 +85,13 @@ const Home = () => {
   };
 
   return (
-    <Box display="flex">
-      <Box flex="3">
+    <Flex direction={{ base: "column", md: "row" }}>
+      <Box
+        flex={{ base: "none", md: 3 }}
+        w="100%"
+        h={{ base: "50vh", md: "100vh" }}
+        minH="350px"
+      >
         <MapComponent
           center={userLocation}
           locationData={locationData}
@@ -115,23 +102,15 @@ const Home = () => {
         />
       </Box>
 
-      <Box flex="1" p={4}>
-        {!googleMapsApiKey ? (
-          <Box mt={4}>
-            <p style={{ color: "red" }}>
-              Google Maps API key is missing! Please configure the API key.
-            </p>
-          </Box>
-        ) : (
-          <LocationForm
-            locationData={locationData}
-            setLocationData={setLocationData}
-            handleSaveLocation={handleSaveLocation}
-            handleColorChange={handleColorChange}
-          />
-        )}
+      <Box w="100%" maxW="300px" mx="auto" p={4}>
+        <LocationForm
+          locationData={locationData}
+          setLocationData={setLocationData}
+          handleSaveLocation={handleSaveLocation}
+          handleColorChange={handleColorChange}
+        />
       </Box>
-    </Box>
+    </Flex>
   );
 };
 

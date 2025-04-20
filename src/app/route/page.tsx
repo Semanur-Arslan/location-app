@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/types/redux";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, Flex } from "@chakra-ui/react";
 import { MapComponent } from "@/components/Map";
 import { Title } from "@/components/Title";
 import { toast } from "react-toastify";
@@ -86,8 +86,13 @@ const RoutePage = () => {
   }, []);
 
   return (
-    <Box display="flex">
-      <Box flex="3">
+    <Flex direction={{ base: "column", md: "row" }}>
+      <Box
+        flex={{ base: "none", md: 3 }}
+        w="100%"
+        h={{ base: "50vh", md: "100vh" }}
+        minH="350px"
+      >
         {userLocation && (
           <MapComponent
             center={userLocation}
@@ -101,14 +106,14 @@ const RoutePage = () => {
         )}
       </Box>
 
-      <Box flex="1" p={4}>
+      <Box w="100%" maxW="300px" mx="auto" p={4}>
         {locations.length === 0 ? (
           <Box mt={4}>
             <p>There are no saved locations</p>
           </Box>
         ) : (
           <Box
-            minHeight="100vh"
+            height="100%"
             display="flex"
             flexDirection="column"
             justifyContent="center"
@@ -122,16 +127,16 @@ const RoutePage = () => {
               location information is open.
             </Text>
             <Text>You can add a new location or view your location list</Text>
-            <TwoSideLinks
-              links={[
-                { label: "Add New Location", href: "/" },
-                { label: "Show Location List", href: "/list" },
-              ]}
-            />
           </Box>
         )}
+        <TwoSideLinks
+          links={[
+            { label: "Add New Location", href: "/" },
+            { label: "Show Location List", href: "/list" },
+          ]}
+        />
       </Box>
-    </Box>
+    </Flex>
   );
 };
 

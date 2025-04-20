@@ -28,7 +28,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey,
-    libraries: ["places"],
   });
 
   useEffect(() => {
@@ -41,7 +40,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
   return (
     <GoogleMap
-      mapContainerStyle={{ width: "100%", height: "100vh" }}
+      mapContainerStyle={{ width: "100%", height: "100%" }}
       center={center}
       zoom={13}
       onClick={onMapClick}

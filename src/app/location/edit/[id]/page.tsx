@@ -1,23 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 import { updateLocation, removeLocation } from "@/store/locationSlice";
 import { toast } from "react-toastify";
 import { ColorResult } from "react-color";
-import { LocationData } from "@/types/types";
-import { Location } from "@/types/redux";
+import { LocationData, MapClickEvent } from "@/types/types";
+import { Location, RootState } from "@/types/redux";
 import { MapComponent } from "@/components/Map";
-import { useParams } from "next/navigation";
-import { RootState } from "@/types/redux";
-import { MapClickEvent } from "@/types/types";
+import { useParams, useRouter } from "next/navigation";
 import LocationForm from "@/components/LocationForm";
-import { useRouter } from "next/navigation";
+import { useValidation } from "@/hooks/useValidation";
+import { useGeolocation } from "@/hooks/useGeolocation";
 
 const EditLocation = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const router = useRouter();
+  const userLocation = useGeolocation();
   const locations = useSelector((state: RootState) => state.location.locations);
 
   const [locationData, setLocationData] = useState<LocationData>({
@@ -26,26 +26,8 @@ const EditLocation = () => {
     name: "",
     color: "#ff0000",
   });
+  const { errors, validate } = useValidation(locationData);
   const [showInfo, setShowInfo] = useState(false);
-  const [userLocation, setUserLocation] = useState({
-    lat: 41.0082,
-    lng: 28.9784,
-  });
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) =>
-          setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
-        () =>
-          toast.info(
-            "You can enable location permissions for accurate location information."
-          )
-      );
-    } else {
-      toast.error("Geolocation API is not supported.");
-    }
-  }, []);
 
   useEffect(() => {
     if (params.id) {
@@ -64,9 +46,7 @@ const EditLocation = () => {
 
   const handleMapClick = (e: MapClickEvent) => {
     const latLng = e.latLng;
-    if (!latLng || !locationData.name || !locationData.color) {
-      return toast.error("Location name and color information missing");
-    }
+    if (!latLng) return;
     setLocationData((prev) => ({
       ...prev,
       lat: latLng.lat(),
@@ -77,6 +57,12 @@ const EditLocation = () => {
 
   const handleSaveLocation = () => {
     const { lat, lng, name, color } = locationData;
+    if (!validate()) {
+      Object.values(errors).forEach((error) => {
+        toast.error(error);
+      });
+      return;
+    }
     if (lat && lng && name && color) {
       const updatedLocation: Location = {
         id: params.id as string,
@@ -118,10 +104,19 @@ const EditLocation = () => {
   };
 
   return (
-    <Box display="flex">
-      <Box flex="3">
+    <Flex direction={{ base: "column", md: "row" }}>
+      <Box
+        flex={{ base: "none", md: 3 }}
+        w="100%"
+        h={{ base: "50vh", md: "100vh" }}
+        minH="350px"
+      >
         <MapComponent
-          center={userLocation}
+          center={
+            locationData.lat && locationData.lng
+              ? { lat: locationData.lat, lng: locationData.lng }
+              : userLocation
+          }
           locationData={locationData}
           showInfo={showInfo}
           onMapClick={handleMapClick}
@@ -130,7 +125,7 @@ const EditLocation = () => {
         />
       </Box>
 
-      <Box flex="1" p={4}>
+      <Box w="100%" maxW="300px" mx="auto" p={4}>
         <LocationForm
           locationData={locationData}
           setLocationData={setLocationData}
@@ -139,7 +134,7 @@ const EditLocation = () => {
           handleDeleteLocation={handleDeleteLocation}
         />
       </Box>
-    </Box>
+    </Flex>
   );
 };
 
