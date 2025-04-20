@@ -50,6 +50,9 @@ https://github.com/user-attachments/assets/f235c87c-f4f3-4f0b-91b5-7039dd1754fd
 
 ---
 
+🔗 **Vercel Link:**  
+👉 [https://location-app-kohl.vercel.app/](https://location-app-kohl.vercel.app/)
+
 ## 📦 Kurulum Adımları
 
 ```bash
