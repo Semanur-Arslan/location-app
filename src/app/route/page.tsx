@@ -2,14 +2,12 @@
 import { useSelector } from "react-redux";
 import { useState, useEffect, useCallback } from "react";
 import { RootState } from "@/types/redux";
-import { Box, Text, Flex } from "@chakra-ui/react";
-import { MapComponent } from "@/components/Map";
-import { Title } from "@/components/Title";
+import MapComponent from "@/components/Map";
 import { toast } from "react-toastify";
-import { TwoSideLinks } from "@/components/TwoSideLinks";
-import { useGeolocation } from "@/hooks/useGeolocation";
+import useGeolocation from "@/hooks/useGeolocation";
 import { sortLocationsByDistance } from "@/utils/sortLocationsByDistance";
-import LocationList from "@/components/LocationList";
+import MapFormLayout from "@/components/layout/MapFormLayout";
+import RouteInfo from "@/components/RouteInfo";
 
 const RoutePage = () => {
   const locations = useSelector((state: RootState) => state.location.locations);
@@ -80,14 +78,9 @@ const RoutePage = () => {
   };
 
   return (
-    <Flex direction={{ base: "column", md: "row" }}>
-      <Box
-        flex={{ base: "none", md: 3 }}
-        w="100%"
-        h={{ base: "50vh", md: "100vh" }}
-        minH="350px"
-      >
-        {userLocation && (
+    <MapFormLayout
+      map={
+        userLocation && (
           <MapComponent
             center={userLocation}
             markers={locationsWithUserLocation}
@@ -97,47 +90,15 @@ const RoutePage = () => {
             onGoogleReady={handleGoogleReady}
             userLocation={userLocation}
           />
-        )}
-      </Box>
-
-      <Box w="100%" maxW="300px" mx="auto" p={4}>
-        {locations.length === 0 ? (
-          <Box mt={4}>
-            <p>There are no saved locations</p>
-            <TwoSideLinks links={[{ label: "Add New Location", href: "/" }]} />
-          </Box>
-        ) : (
-          <Box
-            height="100%"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="flex-start"
-            gap="4"
-          >
-            <Title text="Route Created" />
-            <Text>
-              It started from the location closest to your location and a route
-              was created for the points you defined.
-            </Text>
-            <LocationList
-              locations={locationsWithUserLocation.filter(
-                (loc) => loc.id !== "my-location"
-              )}
-              onLocationClick={handleMarkerClick}
-            />
-
-            <TwoSideLinks
-              links={[
-                { label: "Add New Location", href: "/" },
-                { label: "Show Location List", href: "/list" },
-              ]}
-            />
-          </Box>
-        )}
-      </Box>
-    </Flex>
+        )
+      }
+      form={
+        <RouteInfo
+          locationsWithUserLocation={locationsWithUserLocation}
+          handleMarkerClick={handleMarkerClick}
+        />
+      }
+    />
   );
 };
-
 export default RoutePage;

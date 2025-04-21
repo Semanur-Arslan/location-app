@@ -1,13 +1,13 @@
 "use client";
-
+import React from "react";
 import { Box, Text, Button } from "@chakra-ui/react";
 import { HiLocationMarker } from "react-icons/hi";
 import { LocationInfoCardProps } from "@/types/types";
 
-export const LocationInfoCard = ({
+const LocationInfoCard: React.FC<LocationInfoCardProps> = ({
   locationData,
   onSave,
-}: LocationInfoCardProps) => {
+}) => {
   return (
     <Box
       p={2}
@@ -49,3 +49,5 @@ export const LocationInfoCard = ({
     </Box>
   );
 };
+
+export default LocationInfoCard;

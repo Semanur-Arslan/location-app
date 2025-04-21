@@ -7,14 +7,14 @@ import {
   DirectionsRenderer,
   useJsApiLoader,
 } from "@react-google-maps/api";
-import { LocationInfoCard } from "@/components/LocationInfoCard";
+import LocationInfoCard from "./LocationInfoCard";
 import { MapComponentProps } from "@/types/types";
 import { getColoredMarkerIcon } from "@/utils/markerUtils";
-import { useMapStyles } from "@/hooks/useMapStyles";
+import useMapStyles from "@/hooks/useMapStyles";
 
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
-export const MapComponent: React.FC<MapComponentProps> = ({
+const MapComponent: React.FC<MapComponentProps> = ({
   center,
   locationData,
   showInfo = false,
@@ -81,7 +81,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             {isSelected && marker.name && (
               <InfoWindow
                 position={{ lat: marker.lat, lng: marker.lng }}
-                onCloseClick={() => onMarkerClick?.({ ...marker, id: null })}
+                onCloseClick={() => onMarkerClick?.({ ...marker })}
               >
                 <LocationInfoCard locationData={marker} />
               </InfoWindow>
@@ -105,3 +105,5 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     </GoogleMap>
   );
 };
+
+export default MapComponent;

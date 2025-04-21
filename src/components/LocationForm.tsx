@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, Input, Button, Flex } from "@chakra-ui/react";
 import { LocationFormProps } from "@/types/types";
-import { ColorPicker } from "@/components/ColorPicker";
-import { Title } from "@/components/Title";
-import { TwoSideLinks } from "./TwoSideLinks";
+import Title from "./Title";
+import TwoSideLinks from "./TwoSideLinks";
+import { ChromePicker } from "react-color";
 
 const LocationForm: React.FC<LocationFormProps> = ({
   locationData,
@@ -14,23 +14,15 @@ const LocationForm: React.FC<LocationFormProps> = ({
   type,
 }) => {
   return (
-    <Box
-      height="100%"
-      display="flex"
+    <Flex
       flexDirection="column"
-      justifyContent="center"
-      alignItems="flex-start"
-      gap="4"
+      gap={4}
+      width={{ base: "100%", sm: "50%", md: "100%" }}
+      p={4}
     >
       <Title text={type === "edit" ? "Edit Location" : "Add Location"} />
 
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap="4"
-        width="100%"
-        maxWidth="400px"
-      >
+      <Flex flexDirection="column" gap={4}>
         <Input
           placeholder="Location Name"
           value={locationData.name}
@@ -44,13 +36,14 @@ const LocationForm: React.FC<LocationFormProps> = ({
         />
 
         <Box>
-          <ColorPicker
-            color={locationData.color ?? "gray"}
+          <ChromePicker
+            color={locationData.color}
             onChange={handleColorChange}
+            styles={{ default: { picker: { width: "100%" } } }}
           />
         </Box>
 
-        <Flex gap={4} mt={4} justifyContent="flex-end">
+        <Flex gap={4} justifyContent="flex-end">
           <Button colorScheme="teal" onClick={handleSaveLocation}>
             {type === "edit" ? "Save Changes" : "Add Location"}
           </Button>
@@ -64,10 +57,10 @@ const LocationForm: React.FC<LocationFormProps> = ({
             </Button>
           )}
         </Flex>
-      </Box>
+      </Flex>
 
       <TwoSideLinks links={[{ label: "Show Location List", href: "/list" }]} />
-    </Box>
+    </Flex>
   );
 };
 

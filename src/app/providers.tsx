@@ -6,14 +6,15 @@ import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "@/store/index";
 import { CacheProvider } from "@emotion/react";
 import { emotionCache } from "@/lib/emotion-cache";
-import { Toaster } from "@/components/Toaster";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import theme from "@/lib/theme";
 import ThemeToggleButton from "@/components/ThemeToggleButton";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Toaster />
+      <ToastContainer />
       <CacheProvider value={emotionCache}>
         <ChakraProvider theme={theme}>
           <ThemeToggleButton />

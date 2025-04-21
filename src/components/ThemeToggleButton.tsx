@@ -7,7 +7,7 @@ const ThemeToggleButton = () => {
 
   return (
     <IconButton
-      aria-label="Tema Değiştir"
+      aria-label="Change Theme"
       icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
       onClick={toggleColorMode}
       position="absolute"

@@ -1,6 +1,6 @@
 import { useColorMode } from "@chakra-ui/react";
 
-export const useMapStyles = () => {
+const useMapStyles = () => {
   const { colorMode } = useColorMode();
   const isDarkMode = colorMode === "dark";
 
@@ -44,3 +44,5 @@ export const useMapStyles = () => {
 
   return [];
 };
+
+export default useMapStyles;
