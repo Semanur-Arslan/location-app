@@ -10,8 +10,13 @@ const useGeolocation = () => {
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(({ coords }) =>
-        setUserLocation({ lat: coords.latitude, lng: coords.longitude })
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) =>
+          setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
+        () =>
+          toast.info(
+            "You can enable location permissions for accurate location information."
+          )
       );
     } else {
       toast.error("Geolocation API is not supported.");

@@ -13,5 +13,5 @@ export const addUserLocation = (
     color: "gray",
   };
 
-  return [...locations, userMarker];
+  return [userMarker, ...locations];
 };
