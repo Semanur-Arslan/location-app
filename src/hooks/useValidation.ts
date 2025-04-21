@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { LocationData } from "@/types/types";
-import { ValidationErrors } from "@/types/types";
+import { LocationData, ValidationErrors } from "@/types/types";
+import { toast } from "react-toastify";
 
-export const useValidation = (locationData: LocationData) => {
+const useValidation = () => {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  const validate = (): boolean => {
+  const validate = (locationData: LocationData): boolean => {
     const validationErrors: ValidationErrors = {};
 
     if (!locationData.name?.trim() || !locationData.color) {
@@ -18,8 +18,16 @@ export const useValidation = (locationData: LocationData) => {
 
     setErrors(validationErrors);
 
+    if (Object.keys(validationErrors).length > 0) {
+      Object.values(validationErrors).forEach((error) => {
+        toast.error(error);
+      });
+    }
+
     return Object.keys(validationErrors).length === 0;
   };
 
   return { errors, validate };
 };
+
+export default useValidation;

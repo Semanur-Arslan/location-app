@@ -5,7 +5,6 @@ import {
   IconButton,
   Stack,
   Text,
-  Button,
   HStack,
   VStack,
   Flex,
@@ -14,12 +13,21 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/types/redux";
 import { FaChevronRight, FaMapMarkerAlt } from "react-icons/fa";
-import { Title } from "@/components/Title";
+import Title from "@/components/Title";
 
 const LocationList = () => {
   const locations = useSelector((state: RootState) => state.location.locations);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const router = useRouter();
+
+  function handleIconClick(locId: string) {
+    setSelectedId((prev) => (prev === locId ? null : locId));
+  }
+
+  function handleEditClick(locId: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    router.push(`/edit/${locId}`);
+  }
   return (
     <Box p={6} height="100%">
       <VStack align="start" spacing={6}>
@@ -28,16 +36,16 @@ const LocationList = () => {
           alignItems="center"
           mb={4}
           width="100%"
+          flexWrap={{ base: "wrap", lg: "nowrap" }}
+          gap={4}
         >
-          <Title text="Saved Locations" />
-          <Flex gap={2} pe={24}>
-            <Button colorScheme="teal" onClick={() => router.push("route")}>
-              Show Route
-            </Button>
-            <Button colorScheme="gray" onClick={() => router.push("/")}>
-              Add New Location
-            </Button>
-          </Flex>
+          <Title
+            text="Saved Locations"
+            links={[
+              { label: "Show Route", href: "route", color: "teal" },
+              { label: "Add New Location", href: "/", color: "gray" },
+            ]}
+          />
         </Flex>
 
         {locations.length === 0 ? (
@@ -82,11 +90,7 @@ const LocationList = () => {
                         transform: "scale(1.1)",
                         borderBottom: `2px solid ${loc.color}`,
                       }}
-                      onClick={() =>
-                        setSelectedId((prev) =>
-                          prev === loc.id ? null : loc.id
-                        )
-                      }
+                      onClick={() => handleIconClick(loc.id)}
                     />
 
                     {selectedId === loc.id && (
@@ -110,10 +114,7 @@ const LocationList = () => {
                     variant="ghost"
                     color="gray"
                     alignSelf={{ base: "flex-end", sm: "center" }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      router.push(`/edit/${loc.id}`);
-                    }}
+                    onClick={(e) => handleEditClick(loc.id, e)}
                   />
                 </Flex>
               </Box>

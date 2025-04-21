@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { LatLngLiteral } from "@/types/types";
 
-export const useGeolocation = () => {
+const useGeolocation = () => {
   const [userLocation, setUserLocation] = useState<LatLngLiteral>({
     lat: 41.0082,
     lng: 28.9784,
@@ -25,3 +25,5 @@ export const useGeolocation = () => {
 
   return userLocation;
 };
+
+export default useGeolocation;

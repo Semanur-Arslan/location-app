@@ -4,13 +4,13 @@ import { Flex, Link, useColorModeValue } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { TwoSideLinksProps } from "@/types/types";
 
-export const TwoSideLinks: React.FC<TwoSideLinksProps> = ({ links }) => {
+const TwoSideLinks: React.FC<TwoSideLinksProps> = ({ links }) => {
   const linkColor = useColorModeValue("teal.500", "gray.100");
   return (
     <Flex
-      mt={4}
       justify={links.length === 1 ? "flex-end" : "space-between"}
       width="100%"
+      flexWrap="wrap"
     >
       {links.map((link, index) => (
         <Link
@@ -27,3 +27,5 @@ export const TwoSideLinks: React.FC<TwoSideLinksProps> = ({ links }) => {
     </Flex>
   );
 };
+
+export default TwoSideLinks;
