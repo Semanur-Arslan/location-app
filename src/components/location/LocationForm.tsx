@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Input, Button, Flex } from "@chakra-ui/react";
 import { LocationFormProps } from "@/types/types";
-import Title from "./Title";
-import TwoSideLinks from "./TwoSideLinks";
+import Title from "../Title";
+import TwoSideLinks from "../TwoSideLinks";
 import { ChromePicker } from "react-color";
 
 const LocationForm: React.FC<LocationFormProps> = ({

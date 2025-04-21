@@ -1,6 +1,6 @@
 "use client";
 import MapComponent from "@/components/Map";
-import LocationForm from "@/components/LocationForm";
+import LocationForm from "@/components/location/LocationForm";
 import useGeolocation from "@/hooks/useGeolocation";
 import useLocationForm from "@/hooks/useLocationForm";
 import useLocationActions from "@/hooks/useLocationActions";
@@ -27,6 +27,7 @@ const Home = () => {
     <MapFormLayout
       map={
         <MapComponent
+          mode="add"
           center={userLocation}
           locationData={locationData}
           showInfo={showInfo}

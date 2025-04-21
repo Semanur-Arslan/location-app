@@ -1,17 +1,17 @@
 import React from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
-import Title from "./Title";
+import Title from "../Title";
 import LocationList from "./LocationList";
-import TwoSideLinks from "./TwoSideLinks";
+import TwoSideLinks from "../TwoSideLinks";
 import { RouteInfoProps } from "@/types/types";
 
 const RouteInfo: React.FC<RouteInfoProps> = ({
-  locationsWithUserLocation,
+  routeLocations,
   handleMarkerClick,
 }) => {
   return (
     <Flex flexDirection="column" w="100%" p={4} gap={4}>
-      {locationsWithUserLocation.length === 0 ? (
+      {routeLocations.length === 0 ? (
         <Box>
           <p>There are no saved locations</p>
           <TwoSideLinks links={[{ label: "Add New Location", href: "/" }]} />
@@ -24,9 +24,7 @@ const RouteInfo: React.FC<RouteInfoProps> = ({
             was created for the points you defined.
           </Text>
           <LocationList
-            locations={locationsWithUserLocation.filter(
-              (loc) => loc.id !== "my-location"
-            )}
+            locations={routeLocations.filter((loc) => loc.id !== "my-location")}
             onLocationClick={handleMarkerClick}
           />
 

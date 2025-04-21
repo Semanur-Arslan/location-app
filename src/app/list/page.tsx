@@ -5,7 +5,6 @@ import {
   IconButton,
   Stack,
   Text,
-  Button,
   HStack,
   VStack,
   Flex,
@@ -20,10 +19,6 @@ const LocationList = () => {
   const locations = useSelector((state: RootState) => state.location.locations);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const router = useRouter();
-
-  function handleRouteClick(route: string) {
-    router.push(route);
-  }
 
   function handleIconClick(locId: string) {
     setSelectedId((prev) => (prev === locId ? null : locId));
@@ -41,19 +36,16 @@ const LocationList = () => {
           alignItems="center"
           mb={4}
           width="100%"
+          flexWrap={{ base: "wrap", lg: "nowrap" }}
+          gap={4}
         >
-          <Title text="Saved Locations" />
-          <Flex gap={2} pe={24}>
-            <Button
-              colorScheme="teal"
-              onClick={() => handleRouteClick("route")}
-            >
-              Show Route
-            </Button>
-            <Button colorScheme="gray" onClick={() => handleRouteClick("/")}>
-              Add New Location
-            </Button>
-          </Flex>
+          <Title
+            text="Saved Locations"
+            links={[
+              { label: "Show Route", href: "route", color: "teal" },
+              { label: "Add New Location", href: "/", color: "gray" },
+            ]}
+          />
         </Flex>
 
         {locations.length === 0 ? (

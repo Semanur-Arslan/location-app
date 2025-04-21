@@ -2,31 +2,17 @@
 import React, { useEffect } from "react";
 import {
   GoogleMap,
-  Marker,
-  InfoWindow,
   DirectionsRenderer,
   useJsApiLoader,
 } from "@react-google-maps/api";
-import LocationInfoCard from "./LocationInfoCard";
 import { MapComponentProps } from "@/types/types";
-import { getColoredMarkerIcon } from "@/utils/markerUtils";
 import useMapStyles from "@/hooks/useMapStyles";
+import LocationMarker from "./markers/LocationMarker";
+import RouteMarker from "./markers/RouteMarker";
 
 const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
-const MapComponent: React.FC<MapComponentProps> = ({
-  center,
-  locationData,
-  showInfo = false,
-  onMapClick,
-  onCloseInfo,
-  onSave,
-  markers = [],
-  onMarkerClick,
-  selectedId,
-  directions,
-  onGoogleReady,
-}) => {
+const MapComponent: React.FC<MapComponentProps> = (props) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey,
   });
@@ -34,10 +20,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const mapStyles = useMapStyles();
 
   useEffect(() => {
-    if (isLoaded) {
-      onGoogleReady?.();
+    if (isLoaded && props.mode === "list") {
+      props.onGoogleReady?.();
     }
-  }, [isLoaded, onGoogleReady]);
+  }, [isLoaded, props]);
 
   if (!isLoaded) return <div>Loading map...</div>;
 
@@ -47,52 +33,40 @@ const MapComponent: React.FC<MapComponentProps> = ({
         width: "100%",
         height: "100%",
       }}
-      center={center}
+      center={props.center}
       zoom={13}
-      onClick={onMapClick}
+      onClick={props.onMapClick}
       options={{
         styles: mapStyles,
       }}
     >
-      {locationData?.lat && locationData?.lng && (
-        <Marker position={{ lat: locationData.lat, lng: locationData.lng }}>
-          {showInfo && (
-            <InfoWindow
-              position={{ lat: locationData.lat, lng: locationData.lng }}
-              onCloseClick={onCloseInfo}
-            >
-              <LocationInfoCard locationData={locationData} onSave={onSave} />
-            </InfoWindow>
-          )}
-        </Marker>
+      {props.mode === "add" && (
+        <LocationMarker
+          locationData={props.locationData}
+          showInfo={props.showInfo}
+          onCloseInfo={props.onCloseInfo}
+          onSave={props.onSave}
+        />
       )}
 
-      {markers.map((marker) => {
-        const isSelected = marker.id === selectedId;
-        const icon = getColoredMarkerIcon(marker.color || "#FF0000");
+      {props.mode === "list" &&
+        props.routeLocations.map((routeLocation) => {
+          const isSelected = routeLocation.id === props.selectedId;
+          return (
+            <RouteMarker
+              key={
+                routeLocation.id || `${routeLocation.lat}-${routeLocation.lng}`
+              }
+              routeLocation={routeLocation}
+              isSelected={isSelected}
+              onRouteMarkerClick={props.onSelectMarker}
+            />
+          );
+        })}
 
-        return (
-          <Marker
-            key={marker.id || `${marker.lat}-${marker.lng}`}
-            position={{ lat: marker.lat, lng: marker.lng }}
-            icon={icon}
-            onClick={() => onMarkerClick?.(marker)}
-          >
-            {isSelected && marker.name && (
-              <InfoWindow
-                position={{ lat: marker.lat, lng: marker.lng }}
-                onCloseClick={() => onMarkerClick?.({ ...marker })}
-              >
-                <LocationInfoCard locationData={marker} />
-              </InfoWindow>
-            )}
-          </Marker>
-        );
-      })}
-
-      {directions && (
+      {props.mode === "list" && props.directions && (
         <DirectionsRenderer
-          directions={directions}
+          directions={props.directions}
           options={{
             suppressMarkers: true,
             preserveViewport: true,

@@ -16,7 +16,7 @@ export interface LocationData {
   name: string;
   color: string;
 }
-export interface MarkerType {
+export interface RouteLocation {
   id: string;
   lat: number;
   lng: number;
@@ -50,7 +50,7 @@ export interface LocationListProps {
 
 // === Route Info ===
 export interface RouteInfoProps {
-  locationsWithUserLocation: Location[];
+  routeLocations: Location[];
   handleMarkerClick: (id: string) => void;
 }
 
@@ -61,30 +61,67 @@ export interface MapFormLayoutProps {
 }
 
 // === Map Component ===
-export interface MapComponentProps {
+interface MapBaseProps {
   center: { lat: number; lng: number };
-  //add location
-  locationData?: LocationData;
-  showInfo?: boolean;
   onMapClick?: (e: google.maps.MapMouseEvent) => void;
-  onCloseInfo?: () => void;
-  onSave?: () => void;
-  //list locations
-  markers?: MarkerType[];
-  onMarkerClick?: (marker: MarkerType) => void;
-  selectedId?: string | null;
-  directions?: google.maps.DirectionsResult | null;
-  onGoogleReady?: () => void;
+}
+interface AddLocationProps extends MapBaseProps {
+  mode: "add";
+  locationData: LocationData;
+  showInfo: boolean;
+  onCloseInfo: () => void;
+  onSave: () => void;
+}
+interface ListRouteProps extends MapBaseProps {
+  mode: "list";
+  routeLocations: RouteLocation[];
+  onSelectMarker: (routeLocation: RouteLocation) => void;
+  selectedId: string | null;
+  directions: google.maps.DirectionsResult | null;
   userLocation?: google.maps.LatLngLiteral;
+  onGoogleReady: () => void;
+}
+export type MapComponentProps = AddLocationProps | ListRouteProps;
+
+// === Markers ===
+export interface LocationMarkerProps {
+  locationData: LocationData;
+  showInfo: boolean;
+  onCloseInfo: () => void;
+  onSave: () => void;
+}
+export interface RouteMarkerProps {
+  routeLocation: RouteLocation;
+  isSelected: boolean;
+  onRouteMarkerClick: (routeLocation: RouteLocation) => void;
 }
 
 // === Links ===
 export interface LinkData {
   label: string;
   href: string;
+  color?: string;
 }
 export interface TwoSideLinksProps {
   links: LinkData[];
+}
+
+// === Title ===
+export interface TitleProps {
+  text: string;
+  links?: LinkData[];
+}
+
+// === RoutePlanning ===
+export interface RoutePlanningProps {
+  userLocation: LatLngLiteral;
+  googleReady: boolean;
+}
+
+// === AddUserLocationProps ===
+export interface AddUserLocationProps {
+  locations: Location[];
+  userLocation: LatLngLiteral;
 }
 
 // === Actions ===
