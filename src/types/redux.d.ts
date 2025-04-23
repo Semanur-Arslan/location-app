@@ -1,3 +1,5 @@
+import { store } from "@/store/index";
+
 export interface Location {
   id: string;
   name: string;
@@ -6,12 +8,9 @@ export interface Location {
   color: string;
 }
 
-export interface RootState {
-  location: LocationState;
-}
-
-export type AppDispatch = (action: Action<string>) => void;
-
 export interface LocationState {
   locations: Location[];
 }
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

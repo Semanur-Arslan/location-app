@@ -1,6 +1,4 @@
 "use client";
-import { useSelector } from "react-redux";
-import { RootState } from "@/types/redux";
 import MapComponent from "@/components/Map";
 import { useParams, useRouter } from "next/navigation";
 import LocationForm from "@/components/location/LocationForm";
@@ -9,12 +7,14 @@ import useLocationForm from "@/hooks/useLocationForm";
 import useLocationActions from "@/hooks/useLocationActions";
 import { toast } from "react-toastify";
 import MapFormLayout from "@/components/layout/MapFormLayout";
+import { useAppSelector } from "@/hooks/useReduxTypes";
+import { useCallback } from "react";
 
 const EditLocation = () => {
   const params = useParams();
   const router = useRouter();
-  const userLocation = useGeolocation();
-  const locations = useSelector((state: RootState) => state.location.locations);
+  const { userLocation } = useGeolocation();
+  const locations = useAppSelector((state) => state.location.locations);
   const locationToEdit = locations.find((loc) => loc.id === params.id);
   const id = params.id as string;
   const {
@@ -27,17 +27,17 @@ const EditLocation = () => {
   } = useLocationForm(locationToEdit);
   const { handleEditLocation, handleDeleteLocation } = useLocationActions();
 
-  const onEditLocation = () => {
+  const onEditLocation = useCallback(() => {
     if (!id) {
       toast.error("Location ID not found.");
       return;
     }
     handleEditLocation(id, locationData);
-  };
+  }, [id, locationData, handleEditLocation]);
 
-  const onDeleteLocation = () => {
+  const onDeleteLocation = useCallback(() => {
     handleDeleteLocation(id, () => router.push(`/list`));
-  };
+  }, [id, handleDeleteLocation, router]);
 
   return (
     <MapFormLayout

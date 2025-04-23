@@ -9,14 +9,13 @@ import {
   VStack,
   Flex,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/types/redux";
 import { FaChevronRight, FaMapMarkerAlt } from "react-icons/fa";
 import Title from "@/components/Title";
+import { useAppSelector } from "@/hooks/useReduxTypes";
 
 const LocationList = () => {
-  const locations = useSelector((state: RootState) => state.location.locations);
+  const locations = useAppSelector((state) => state.location.locations);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const router = useRouter();
 

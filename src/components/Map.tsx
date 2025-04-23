@@ -19,11 +19,12 @@ const MapComponent: React.FC<MapComponentProps> = (props) => {
 
   const mapStyles = useMapStyles();
 
+  const { mode, onGoogleReady } = props;
   useEffect(() => {
-    if (isLoaded && props.mode === "list") {
-      props.onGoogleReady?.();
+    if (isLoaded && mode === "list") {
+      onGoogleReady?.();
     }
-  }, [isLoaded, props]);
+  }, [isLoaded, mode, onGoogleReady]);
 
   if (!isLoaded) return <div>Loading map...</div>;
 
@@ -42,6 +43,7 @@ const MapComponent: React.FC<MapComponentProps> = (props) => {
     >
       {props.mode === "add" && (
         <LocationMarker
+          key={`${props.locationData.lat}-${props.locationData.lng}`}
           locationData={props.locationData}
           showInfo={props.showInfo}
           onCloseInfo={props.onCloseInfo}

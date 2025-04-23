@@ -1,4 +1,3 @@
-import { useDispatch } from "react-redux";
 import {
   addLocation,
   updateLocation,
@@ -12,9 +11,10 @@ import {
   EditLocationHandler,
   DeleteLocationHandler,
 } from "@/types/types";
+import { useAppDispatch } from "./useReduxTypes";
 
 const useLocationActions = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { validate } = useValidation();
 
   const handleAddLocation: AddLocationHandler = (locationData, resetForm) => {
