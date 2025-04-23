@@ -32,13 +32,12 @@ const useLocationForm = (initialData?: LocationData) => {
 
     const lat = latLng.lat();
     const lng = latLng.lng();
-
+    setShowInfo(true);
     setLocationData((prev) => ({
       ...prev,
       lat,
       lng,
     }));
-    setShowInfo(true);
   };
 
   const handleColorChange = (color: ColorResult) => {

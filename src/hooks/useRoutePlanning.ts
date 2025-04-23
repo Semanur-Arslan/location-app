@@ -1,28 +1,26 @@
 import { useEffect, useState } from "react";
 import { sortLocationsByDistance } from "@/utils/sortLocationsByDistance";
 import { toast } from "react-toastify";
-import { Location } from "@/types/redux";
 import { RoutePlanningProps } from "@/types/types";
-import { RootState } from "@/types/redux";
-import { useSelector } from "react-redux";
 import { addUserLocation } from "@/utils/addUserLocation";
+import { useAppSelector } from "./useReduxTypes";
+import { useMemo } from "react";
 
 const useRoutePlanning = ({
   userLocation,
   googleReady,
 }: RoutePlanningProps) => {
-  const locations = useSelector((state: RootState) => state.location.locations);
-  const [routeLocations, setRouteLocations] = useState<Location[]>(locations);
+  const locations = useAppSelector((state) => state.location.locations);
 
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
 
-  useEffect(() => {
+  const routeLocations = useMemo(() => {
     if (userLocation && locations.length > 0) {
       const locationsWithUser = addUserLocation(locations, userLocation);
-      const sorted = sortLocationsByDistance(locationsWithUser);
-      setRouteLocations(sorted);
+      return sortLocationsByDistance(locationsWithUser);
     }
+    return locations;
   }, [userLocation, locations]);
 
   useEffect(() => {

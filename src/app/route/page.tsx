@@ -9,7 +9,7 @@ import RouteInfo from "@/components/location/RouteInfo";
 import useRoutePlanning from "@/hooks/useRoutePlanning";
 
 const RoutePage = () => {
-  const userLocation = useGeolocation();
+  const { userLocation } = useGeolocation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [googleReady, setGoogleReady] = useState(false);
 

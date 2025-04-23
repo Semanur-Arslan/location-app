@@ -64,6 +64,7 @@ export interface MapFormLayoutProps {
 interface MapBaseProps {
   center: { lat: number; lng: number };
   onMapClick?: (e: google.maps.MapMouseEvent) => void;
+  onGoogleReady?: () => void;
 }
 interface AddLocationProps extends MapBaseProps {
   mode: "add";
@@ -79,7 +80,6 @@ interface ListRouteProps extends MapBaseProps {
   selectedId: string | null;
   directions: google.maps.DirectionsResult | null;
   userLocation?: google.maps.LatLngLiteral;
-  onGoogleReady: () => void;
 }
 export type MapComponentProps = AddLocationProps | ListRouteProps;
 
@@ -118,10 +118,21 @@ export interface RoutePlanningProps {
   googleReady: boolean;
 }
 
-// === AddUserLocationProps ===
-export interface AddUserLocationProps {
-  locations: Location[];
+// // === AddUserLocationProps ===
+// export interface AddUserLocationProps {
+//   locations: Location[];
+//   userLocation: LatLngLiteral;
+// }
+
+// === UserLocationState ===
+export interface UserLocationState {
   userLocation: LatLngLiteral;
+  isResolved: boolean;
+}
+
+// === GoogleMapState ===
+export interface GoogleMapState {
+  isGoogleReady: boolean;
 }
 
 // === Actions ===

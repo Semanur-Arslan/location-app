@@ -5,9 +5,10 @@ import useGeolocation from "@/hooks/useGeolocation";
 import useLocationForm from "@/hooks/useLocationForm";
 import useLocationActions from "@/hooks/useLocationActions";
 import MapFormLayout from "@/components/layout/MapFormLayout";
+import { useCallback } from "react";
 
 const Home = () => {
-  const userLocation = useGeolocation();
+  const { userLocation } = useGeolocation();
   const {
     locationData,
     setLocationData,
@@ -19,9 +20,9 @@ const Home = () => {
   } = useLocationForm();
   const { handleAddLocation } = useLocationActions();
 
-  const onAddLocation = () => {
+  const onAddLocation = useCallback(() => {
     handleAddLocation(locationData, resetForm);
-  };
+  }, [locationData, resetForm, handleAddLocation]);
 
   return (
     <MapFormLayout

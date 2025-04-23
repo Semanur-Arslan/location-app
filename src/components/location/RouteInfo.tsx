@@ -24,7 +24,7 @@ const RouteInfo: React.FC<RouteInfoProps> = ({
             was created for the points you defined.
           </Text>
           <LocationList
-            locations={routeLocations.filter((loc) => loc.id !== "my-location")}
+            locations={routeLocations}
             onLocationClick={handleMarkerClick}
           />
 
